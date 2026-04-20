@@ -1,4 +1,3 @@
-# Shawy-cash-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -18,15 +17,13 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
 }
 
 body{
   font-family:Arial;
   direction:rtl;
   background:#f5f5f5;
-  overflow-x:hidden !important;
-  position: relative;
+  overflow-x:hidden;
 }
 
 .header{
@@ -257,7 +254,7 @@ grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
 gap:15px;
 padding:20px;
 width: 100%;
-max-width: 100%;
+max-width: 100vw;
 }
 
 .admin-card {
@@ -292,40 +289,24 @@ color:white;
 }
 
 #ordersPage {
-  width: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  max-width: 100% !important;
-  background: #f5f5f5;
-  height: 100vh !important;
-  overflow: hidden !important;
+width: 100%;
+margin: 0;
+padding: 0;
+display: flex;
+flex-direction: column;
+max-width: 100vw;
+overflow-x: hidden;
 }
 
 #ordersList {
-  display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  padding: 20px !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
-  background: #f5f5f5;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  flex: 1 !important;
-  max-height: calc(100vh - 100px) !important;
-}
-
-#ordersList h3 {
-  color: #2ecc71;
-  margin-bottom: 15px;
-  font-size: 20px;
-  position: sticky;
-  top: 0;
-  background: #f5f5f5;
-  padding: 10px 0;
-  z-index: 10;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 15px;
+padding: 20px;
+width: 100%;
+max-width: 100%;
+margin: 0;
+box-sizing: border-box;
 }
 
 .order-item {
@@ -452,7 +433,7 @@ padding: 15px;
 </div>
 <div class="admin-panel">
 <div class="admin-card">
-<h3>📊 الإح��ائيات</h3>
+<h3>📊 الإحصائيات</h3>
 <p>👥 المستخدمين: <span id="totalUsers">0</span></p>
 <p>📦 الطلبات: <span id="totalOrders">0</span></p>
 <p>💰 المبيعات: $<span id="totalSales">0</span></p>
@@ -609,23 +590,14 @@ function goHome(){hideAll(),document.getElementById("home").style.display="block
 function openAdmin(){isAdmin()?(hideAll(),document.getElementById("adminPage").style.display="block",updateAdminStats()):alert("❌ أنت لا تملك صلاحيات الإدمن!");}
 function updateAdminStats(){let users=JSON.parse(localStorage.getItem("users"))||[],totalSales=0,totalOrders=0;users.forEach(user=>{let orders=JSON.parse(localStorage.getItem("orders_"+user.email))||[];totalOrders+=orders.length,orders.forEach(o=>totalSales+=o.price)}),document.getElementById("totalUsers").innerText=users.length,document.getElementById("totalOrders").innerText=totalOrders,document.getElementById("totalSales").innerText=totalSales.toFixed(2);}
 function showAllUsers(){let users=JSON.parse(localStorage.getItem("users"))||[],html='<h3>قائمة المستخدمين</h3><table class="admin-table"><thead><tr><th>الإيميل</th><th>الرصيد</th><th>الإجراء</th></tr></thead><tbody>';users.forEach(u=>{let balance=parseFloat(localStorage.getItem("balance_"+u.email))||0;html+=`<tr><td>${u.email}</td><td>$${balance.toFixed(2)}</td><td><button onclick="deleteUser('${u.email}')">حذف</button></td></tr>`;});html+='</tbody></table><br><button onclick="goBack()" style="width:100%;padding:10px;background:#ccc;color:black;">← رجوع</button>',document.getElementById("adminDetails").innerHTML=html,document.getElementById("adminDetails").style.display="block";}
-function showAllOrders(){let users=JSON.parse(localStorage.getItem("users"))||[],html='<h3>جميع الطلبات</h3><table class="admin-table"><thead><tr><th>المستخدم</th><th>التطبيق</th><th>السعر</th><th>الوقت</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody>';users.forEach(user=>{let orders=JSON.parse(localStorage.getItem("orders_"+user.email))||[];orders.forEach((o,idx)=>{let status=o.completed?"✅ منفذ":"⏳ قيد الانتظار";let btn=o.completed?"":`<button onclick="completeOrder('${user.email}', ${idx})" style="background:#2ecc71; padding:10px 15px; border-radius:6px; cursor:pointer;">✅ تنفيذ</button>`;html+=`<tr><td>${user.email}</td><td>${o.app}</td><td>$${o.price}</td><td>${o.time}</td><td>${status}</td><td>${btn}</td></tr>`;});});html+='</tbody></table><br><button onclick="goBack()" style="width:100%;padding:10px;background:#ccc;color:black;">← رجوع</button>',document.getElementById("adminDetails").innerHTML=html,document.getElementById("adminDetails").style.display="block";}
-function completeOrder(email, idx) {
-  let orders = JSON.parse(localStorage.getItem("orders_" + email)) || [];
-  if(orders[idx]) {
-    orders[idx].completed = true;
-    localStorage.setItem("orders_" + email, JSON.stringify(orders));
-    sendToTelegram("✅ تم تنفيذ طلبك!\n👤 الإيميل: " + email + "\n📱 التطبيق: " + orders[idx].app + "\n💎 الكمية: " + orders[idx].amount + "\n⏰ الوقت: " + new Date().toLocaleString());
-    alert("✅ تم تنفيذ الطلب!");
-    showAllOrders();
-  }
-}
+function showAllOrders(){let users=JSON.parse(localStorage.getItem("users"))||[],html='<h3>جميع الطلبات</h3><table class="admin-table"><thead><tr><th>المستخدم</th><th>التطبيق</th><th>السعر</th><th>الوقت</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody>';users.forEach(user=>{let orders=JSON.parse(localStorage.getItem("orders_"+user.email))||[];orders.forEach((o,idx)=>{let status=o.completed?"✅ منفذ":"⏳ قيد الانتظار",btn=o.completed?"":`<button onclick="completeOrder('${user.email}', ${idx})" style="background:#2ecc71;">تنفيذ</button>`;html+=`<tr><td>${user.email}</td><td>${o.app}</td><td>$${o.price}</td><td>${o.time}</td><td>${status}</td><td>${btn}</td></tr>`;});});html+='</tbody></table><br><button onclick="goBack()" style="width:100%;padding:10px;background:#ccc;color:black;">← رجوع</button>',document.getElementById("adminDetails").innerHTML=html,document.getElementById("adminDetails").style.display="block";}
+function completeOrder(email,idx){let orders=JSON.parse(localStorage.getItem("orders_"+email))||[];orders[idx]&&(orders[idx].completed=!0,localStorage.setItem("orders_"+email,JSON.stringify(orders)),alert("✅ تم تنفيذ الطلب!"),showAllOrders());}
 function showChargeCodes(){let html='<h3>أكواد الشحن</h3><table class="admin-table"><thead><tr><th>الكود</th><th>القيمة</th><th>الحالة</th></tr></thead><tbody>';for(let code in codes){let status=usedCodes.includes(code)?"✅ مستخدم":"❌ متاح";html+=`<tr><td>${code}</td><td>$${codes[code]}</td><td>${status}</td></tr>`;}html+='</tbody></table><br><button onclick="goBack()" style="width:100%;padding:10px;background:#ccc;color:black;">← رجوع</button>',document.getElementById("adminDetails").innerHTML=html,document.getElementById("adminDetails").style.display="block";}
 function deleteUser(email){if(confirm("هل تريد حذف هذا المستخدم؟")){let users=JSON.parse(localStorage.getItem("users"))||[];users=users.filter(u=>u.email!==email),localStorage.setItem("users",JSON.stringify(users)),localStorage.removeItem("balance_"+email),localStorage.removeItem("orders_"+email),alert("✅ تم الحذف!"),showAllUsers();}}
 function goBack(){document.getElementById("adminDetails").style.display="none",updateAdminStats();}
 function openBalance(){hideAll(),document.getElementById("balancePage").style.display="block";}
 function openCharge(){hideAll(),document.getElementById("chargePage").style.display="block";}
-function openOrders(){hideAll(),document.body.style.overflow="auto",document.body.style.width="100%",document.body.style.margin="0",document.body.style.padding="0",document.documentElement.style.overflow="auto",document.documentElement.style.width="100%",document.getElementById("sidebar").classList.remove("open"),document.getElementById("overlay").style.display="none",document.getElementById("ordersPage").style.display="block",document.getElementById("ordersPage").style.width="100%",document.getElementById("ordersPage").style.margin="0",loadOrders();}
+function openOrders(){hideAll(),document.getElementById("sidebar").classList.remove("open"),document.getElementById("overlay").style.display="none",document.getElementById("ordersPage").style.display="block",loadOrders();}
 function openShamSYP(){hideAll(),document.getElementById("shamSYP").style.display="block",selectedMethod="شام كاش سوري";}
 function openShamUSD(){hideAll(),document.getElementById("shamUSD").style.display="block",selectedMethod="شام كاش دولار";}
 function openBank(){hideAll(),document.getElementById("bankPage").style.display="block",selectedMethod="تحويل بنكي";}
@@ -640,15 +612,8 @@ function sendForm(btn){let inputs=btn.parentElement.querySelectorAll("input");if
 function closePopup(){document.getElementById("successPopup").style.display="none";let allInputs=document.querySelectorAll("input:not(#emailInput):not(#passwordInput):not(#regEmail):not(#regPassword):not(#regPasswordConfirm):not(#userId):not(#codeInput)");allInputs.forEach(input=>input.value="");}
 function goWhatsApp(){let phone="966XXXXXXXXX",message="مرحباً، أنا طلبت شحن رصيد",url="https://wa.me/"+phone+"?text="+encodeURIComponent(message);window.open(url,"_blank");}
 function saveOrder(app,amount,price){let user=getUser();if(!user.email)return;let key="orders_"+user.email,orders=JSON.parse(localStorage.getItem(key))||[];orders.push({app,amount,price,time:new Date().toLocaleString(),completed:!1}),localStorage.setItem(key,JSON.stringify(orders));}
-function loadOrders(){let user=getUser();if(!user.email){document.getElementById("ordersList").innerHTML='<div style="text-align:center;padding:40px;"><p style="font-size:18px;">❌ لا يوجد مستخدم</p></div>';return;}let orders=JSON.parse(localStorage.getItem("orders_"+user.email))||[],html='<h3>طلباتي</h3><table class="admin-table"><thead><tr><th>التطبيق</th><th>الكمية</th><th>السعر</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>';if(0===orders.length){html+='<tr><td colspan="5" style="text-align:center;padding:40px;">📭 لا يوجد طلبات</td></tr>';}else{orders.forEach((o,idx)=>{let statusText=o.completed?"✅ تم التنفيذ":"⏳ قيد الانتظار";let rowColor=o.completed?"background:#e8f5e9; color:#2ecc71;":"background:#fff3e0; color:#8B4513;";html+=`<tr style="${rowColor}"><td>${o.app}</td><td>${o.amount} 💎</td><td>$${o.price}</td><td>${o.time}</td><td style="font-weight:bold;"><strong>${statusText}</strong></td></tr>`;});}html+='</tbody></table>';document.getElementById("ordersList").innerHTML=html;}
+function loadOrders(){let user=getUser();if(!user.email)return void(document.getElementById("ordersList").innerHTML='<div style="text-align:center;padding:40px;"><p style="font-size:18px;">❌ لا يوجد مستخدم</p></div>');let orders=JSON.parse(localStorage.getItem("orders_"+user.email))||[],html="";0===orders.length?html='<div style="text-align:center;padding:40px;grid-column:1/-1;"><p style="font-size:18px;">📭 لا يوجد طلبات</p></div>':orders.forEach(o=>{let statusText=o.completed?"✅ تم التنفيذ":"⏳ قيد الانتظار",statusClass=o.completed?"completed":"pending";html+=`<div class="order-item ${statusClass}"><h3>${o.app}</h3><p><strong>💎 الكمية:</strong> ${o.amount}</p><p><strong>💰 السعر:</strong> $${o.price}</p><p><strong>⏰ الوقت:</strong> ${o.time}</p><div class="status ${statusClass==='completed'?'completed':'pending'}">${statusText}</div></div>`;}),document.getElementById("ordersList").innerHTML=html;}
 function sendToTelegram(text){fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:CHAT_ID,text:text})}).catch(e=>console.error("خطأ في الإرسال:",e));}
-
-setInterval(() => {
-  if(document.getElementById("ordersPage").style.display === "block") {
-    loadOrders();
-  }
-}, 1000);
-
 window.addEventListener("DOMContentLoaded",function(){let isLoggedIn=localStorage.getItem("loggedIn");isLoggedIn?(document.getElementById("loginPage").style.display="none",document.getElementById("home").style.display="block",loadApps(),updateBalance()):(document.getElementById("loginPage").style.display="flex",document.getElementById("home").style.display="none"),document.getElementById("successPopup").style.display="none";}),document.addEventListener("DOMContentLoaded",function(){let overlay=document.getElementById("overlay"),sidebar=document.getElementById("sidebar");overlay&&(overlay.onclick=()=>{sidebar.classList.remove("open"),overlay.style.display="none";});});
 </script>
 
